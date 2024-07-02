@@ -14,9 +14,11 @@ import java.util.Optional;
 public class UserServiceIMPL implements UserService{
 
     private UserRepository userRepository ;
+    private  JWTService jwtService ;
 
-    public UserServiceIMPL(UserRepository userRepository) {
+    public UserServiceIMPL(UserRepository userRepository, JWTService jwtService) {
         this.userRepository = userRepository;
+        this.jwtService = jwtService;
     }
 
 
@@ -54,15 +56,18 @@ public class UserServiceIMPL implements UserService{
     }
 
     @Override
-    public Boolean loginVerify(LoginVerify loginVerify ) {
+    public String loginVerify(LoginVerify loginVerify ) {
         Optional<User> byUsername =
                 userRepository.findByUsername(loginVerify.getUsername());
         if (byUsername.isPresent()){
             User user = byUsername.get();
-            return  BCrypt.checkpw(loginVerify.getPassword(),user.getPassword());
+            if(  BCrypt.checkpw(loginVerify.getPassword(),user.getPassword())){
+                String token = jwtService.generateJWTToken(user);
+                return token;
+            }
         }
 
-        return false;
+        return null;
     }
 
 }

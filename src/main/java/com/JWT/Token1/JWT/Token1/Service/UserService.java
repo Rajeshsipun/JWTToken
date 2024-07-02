@@ -7,5 +7,5 @@ import com.JWT.Token1.JWT.Token1.loginVerify.LoginVerify;
 public interface UserService {
     UserDto createUser(UserDto userDto);
 
-    Boolean loginVerify(LoginVerify loginVerify);
+    String loginVerify(LoginVerify loginVerify);
 }

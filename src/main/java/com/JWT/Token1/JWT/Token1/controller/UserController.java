@@ -4,6 +4,7 @@ package com.JWT.Token1.JWT.Token1.controller;
 import com.JWT.Token1.JWT.Token1.Service.UserService;
 import com.JWT.Token1.JWT.Token1.dto.UserDto;
 import com.JWT.Token1.JWT.Token1.entity.User;
+import com.JWT.Token1.JWT.Token1.loginVerify.JWTTokenDto;
 import com.JWT.Token1.JWT.Token1.loginVerify.LoginVerify;
 import com.JWT.Token1.JWT.Token1.repository.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -39,11 +40,14 @@ public class UserController {
 
     //http://localhost:8080/api/v1/user/login
     @PostMapping("/login")
-    public ResponseEntity<String>loginVerify(@RequestBody LoginVerify loginVerify){
-     Boolean val =  userService.loginVerify(loginVerify);
-     if (val){
-         return new ResponseEntity<>("Login Successful",HttpStatus.OK);
+    public ResponseEntity<?>loginVerify(@RequestBody LoginVerify loginVerify){
+        String token =  userService.loginVerify(loginVerify);
+     if (token!=null){
+         JWTTokenDto jwtTokenDto = new JWTTokenDto();
+         jwtTokenDto.setToken(token);
+         jwtTokenDto.setType("JWT Token");
+         return new ResponseEntity<>(jwtTokenDto,HttpStatus.OK);
      }
-     return new ResponseEntity<>("Invalid Username/Password",HttpStatus.OK);
+     return new ResponseEntity<>("Invalid Token",HttpStatus.OK);
     }
 }
