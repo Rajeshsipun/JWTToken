@@ -3,6 +3,8 @@ package com.JWT.Token1.JWT.Token1.controller;
 
 import com.JWT.Token1.JWT.Token1.Service.UserService;
 import com.JWT.Token1.JWT.Token1.dto.UserDto;
+import com.JWT.Token1.JWT.Token1.entity.User;
+import com.JWT.Token1.JWT.Token1.loginVerify.LoginVerify;
 import com.JWT.Token1.JWT.Token1.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,5 +35,15 @@ public class UserController {
         userDto.setPassword(BCrypt.hashpw(userDto.getPassword(),BCrypt.gensalt()));
         UserDto user = userService.createUser(userDto);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
+    }
+
+    //http://localhost:8080/api/v1/user/login
+    @PostMapping("/login")
+    public ResponseEntity<String>loginVerify(@RequestBody LoginVerify loginVerify){
+     Boolean val =  userService.loginVerify(loginVerify);
+     if (val){
+         return new ResponseEntity<>("Login Successful",HttpStatus.OK);
+     }
+     return new ResponseEntity<>("Invalid Username/Password",HttpStatus.OK);
     }
 }

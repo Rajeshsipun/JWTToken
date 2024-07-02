@@ -3,8 +3,12 @@ package com.JWT.Token1.JWT.Token1.Service;
 
 import com.JWT.Token1.JWT.Token1.dto.UserDto;
 import com.JWT.Token1.JWT.Token1.entity.User;
+import com.JWT.Token1.JWT.Token1.loginVerify.LoginVerify;
 import com.JWT.Token1.JWT.Token1.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserServiceIMPL implements UserService{
@@ -23,6 +27,8 @@ public class UserServiceIMPL implements UserService{
         UserDto userDto1 = entityToDto(saveUser);
         return userDto1;
     }
+
+
 
     public User dtoToEntity(UserDto userDto ){
         User user= new User() ;
@@ -46,4 +52,17 @@ public class UserServiceIMPL implements UserService{
 
         return userDto;
     }
+
+    @Override
+    public Boolean loginVerify(LoginVerify loginVerify ) {
+        Optional<User> byUsername =
+                userRepository.findByUsername(loginVerify.getUsername());
+        if (byUsername.isPresent()){
+            User user = byUsername.get();
+            return  BCrypt.checkpw(loginVerify.getPassword(),user.getPassword());
+        }
+
+        return false;
+    }
+
 }
